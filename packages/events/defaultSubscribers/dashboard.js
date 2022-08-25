@@ -10,7 +10,7 @@ module.exports = {
       port: 24012
     };
 
-    this.messageBus = new DashboardMessageBusClient(dashboardConfig);
+    this.messageBusClient = new DashboardMessageBusClient(dashboardConfig);
 
     this._logger = {
       log: ((...args) => {
@@ -27,7 +27,7 @@ module.exports = {
     "compile:start": [
       async function () {
         try {
-          const publishLifecycle = await this.messageBus.publish({
+          const publishLifecycle = await this.messageBusClient.publish({
             type: "debug",
             payload: {
               message: "compile:start"
@@ -37,6 +37,17 @@ module.exports = {
         } catch (err) {
           // best effort only, dashboard might not even be alive
         }
+      }
+    ],
+    "compile:succeed": [
+      async function ({ result }) {
+        try {
+          const publishLifecycle = await this.messageBusClient.publish({
+            type: "workflow-compile-result",
+            payload: result
+          });
+          publishLifecycle.abandon();
+        } catch (err) {}
       }
     ],
     "rpc:request": [
