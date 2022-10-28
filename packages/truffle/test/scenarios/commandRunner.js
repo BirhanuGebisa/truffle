@@ -18,7 +18,6 @@ module.exports = {
 
       child.stdout.on("data", data => {
         data = data.toString().replace(/\n$/, "");
-        console.log(data);
         config.logger.log(data);
       });
       child.stderr.on("data", data => {
