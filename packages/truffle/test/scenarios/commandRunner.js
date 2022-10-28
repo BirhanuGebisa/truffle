@@ -18,11 +18,13 @@ module.exports = {
 
       child.stdout.on("data", data => {
         data = data.toString().replace(/\n$/, "");
+        console.log(data);
         config.logger.log(data);
       });
       child.stderr.on("data", data => {
         data = data.toString().replace(/\n$/, "");
         config.logger.log(data);
+        console.log(data);
       });
       child.on("close", code => {
         // If the command didn't exit properly, show the output and throw.
